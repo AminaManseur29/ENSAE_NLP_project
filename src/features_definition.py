@@ -130,10 +130,11 @@ def extract_features(self):
     features_list = []
 
     for text, tokenized_text in zip(texts, tokenized_texts):
+        ponctuation_count, unique_punctuation_count = self.punctuation_features(text)
         features = {
             "quote_frequency": self.quote_frequency(text),
-            "punctuation_count": self.punctuation_features(text)[0],
-            "unique_punctuation_count": self.punctuation_features(text)[1],
+            "punctuation_count": ponctuation_count,
+            "unique_punctuation_count": unique_punctuation_count,
             "exclamation_frequency": self.exclamation_frequency(text),
             "stopword_frequency": self.stopword_frequency(text),
             "camel_case_frequency": self.camel_case_frequency(text),
