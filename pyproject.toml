@@ -1,0 +1,22 @@
+[project]
+name = "ensae-nlp-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dotenv>=0.9.9",
+    "gensim>=4.3.3",
+    "hf-xet>=1.0.3",
+    "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.6",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.1",
+    "nltk>=3.9.1",
+    "pandas>=2.2.3",
+    "pyenchant>=3.2.2",
+    "seaborn>=0.13.2",
+    "sentence-transformers>=4.1.0",
+    "transformers>=4.51.3",
+    "wordcloud>=1.9.4",
+]
