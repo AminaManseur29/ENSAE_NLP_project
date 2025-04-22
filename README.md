@@ -1,12 +1,14 @@
 # ENSAE_NLP_project
 
-Créer un environnement virtuel venv, l'activer et installer les requirements :
+Créer un environnement virtuel venv avec uv, l'activer et installer les requirements :
 
-python -m venv venv
+pip install uv
 
-.\venv\Scripts\Activate.ps1 ou source venv/bin/activate
+uv venv .venv
 
+.venv\Scripts\activate
 
-pip install -r requirements.txt
+uv sync --active
+
 
 Créer un fichier .env et y entrer son token openAI (ou huggingface en fonction des modèles utilisés)
