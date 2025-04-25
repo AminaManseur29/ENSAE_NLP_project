@@ -7,7 +7,6 @@ import string
 import enchant
 import re
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
 from nltk.corpus import sentiwordnet as swn
 
 from nltk.tag import pos_tag
@@ -122,36 +121,36 @@ class extract_stylistic_features:
         interrogative_count = sum(1 for word, tag in tagged_words if tag in ['WRB', 'WDT', 'WP'])
         return interrogative_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
 
-def extract_features(self):
-    """ Extrait toutes les caractéristiques stylistiques pour chaque texte. """
-    texts = self.texts
-    tokenized_texts = self.tokenized_texts
+    def extract_features(self):
+        """ Extrait toutes les caractéristiques stylistiques pour chaque texte. """
+        texts = self.texts
+        tokenized_texts = self.tokenized_texts
 
-    features_list = []
+        features_list = []
 
-    for text, tokenized_text in zip(texts, tokenized_texts):
-        ponctuation_count, unique_punctuation_count = self.punctuation_features(text)
-        features = {
-            "quote_frequency": self.quote_frequency(text),
-            "punctuation_count": ponctuation_count,
-            "unique_punctuation_count": unique_punctuation_count,
-            "exclamation_frequency": self.exclamation_frequency(text),
-            "stopword_frequency": self.stopword_frequency(text),
-            "camel_case_frequency": self.camel_case_frequency(text),
-            "negation_frequency": self.negation_frequency(text),
-            "proper_noun_frequency": self.proper_nouns_frequency(text),
-            "user_mentions_frequency": self.user_mentions_frequency(text),
-            "hashtag_frequency": self.hashtags_frequency(text),
-            "misspelled_words": self.misspelled_words(text),
-            "oov_frequency": self.oov_frequency(text),
-            "noun_frequency": self.noun_frequency(text),
-            "past_tense_frequency": self.past_tense_frequency(tokenized_text),
-            "verb_frequency": self.verb_frequency(tokenized_text),
-            "interrogative_frequency": self.interrogative_frequency(tokenized_text),
-        }
-        features_list.append(features)
+        for text, tokenized_text in zip(texts, tokenized_texts):
+            ponctuation_count, unique_punctuation_count = self.punctuation_features(text)
+            features = {
+                "quote_frequency": self.quote_frequency(text),
+                "punctuation_count": ponctuation_count,
+                "unique_punctuation_count": unique_punctuation_count,
+                "exclamation_frequency": self.exclamation_frequency(text),
+                "stopword_frequency": self.stopword_frequency(text),
+                "camel_case_frequency": self.camel_case_frequency(text),
+                "negation_frequency": self.negation_frequency(text),
+                "proper_noun_frequency": self.proper_nouns_frequency(text),
+                "user_mentions_frequency": self.user_mentions_frequency(text),
+                "hashtag_frequency": self.hashtags_frequency(text),
+                "misspelled_words": self.misspelled_words(text),
+                "oov_frequency": self.oov_frequency(text),
+                "noun_frequency": self.noun_frequency(text),
+                "past_tense_frequency": self.past_tense_frequency(tokenized_text),
+                "verb_frequency": self.verb_frequency(tokenized_text),
+                "interrogative_frequency": self.interrogative_frequency(tokenized_text),
+            }
+            features_list.append(features)
 
-    return pd.DataFrame(features_list)
+        return pd.DataFrame(features_list)
 
 # -----------------------
 # Extraction des caractéristiques de complexité
@@ -188,7 +187,7 @@ class extract_complexity_features():
             if current_ttr < threshold:
                 mtld_value += current_count / len(set(tokenized_text[:i+1]))
                 current_count = 0
-        return mtld_value 
+        return mtld_value
     
     def extract_features(self):
         """ Extrait les caractéristiques de complexité du texte. """

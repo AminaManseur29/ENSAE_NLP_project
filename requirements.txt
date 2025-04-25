@@ -10,6 +10,7 @@ debugpy
 decorator
 dotenv
 executing
+enchant
 filelock
 fonttools
 fsspec
