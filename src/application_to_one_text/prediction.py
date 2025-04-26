@@ -7,12 +7,14 @@ import os
 import joblib
 import numpy as np
 
-from application.embeddings_definition_one_text import (
+from src.application_to_one_text.embeddings_definition_one_text import (
     compute_bert_embedding,
     compute_roberta_embedding,
     compute_sbert_embedding,
 )
-from application.features_definition_one_text import compute_handcrafted_features_one_text
+from src.application_to_one_text.feature_definition_one_text import (
+    compute_handcrafted_features_one_text
+)
 
 # -------------------------------
 # Charger modèle et scaler
