@@ -1,6 +1,6 @@
 """
 Module pour charger un modèle déjà entraîné et prédire à partir d'un texte.
-Utilise les embeddings ou les features handcrafted.
+Utilise les embeddings, bag of words, tf-idf ou features handcrafted.
 """
 
 import os
@@ -47,6 +47,34 @@ def load_model_and_scaler(model_name, feature_type, base_dir="outputs"):
 
     return model, scaler
 
+
+# -------------------------------
+# Charger vectorizer BoW / TF-IDF
+# -------------------------------
+
+
+def load_vectorizer(feature_type, base_dir="outputs"):
+    """
+    Charge le vectorizer BoW ou TF-IDF si besoin.
+
+    Args:
+        feature_type (str): "bow" ou "tfidf"
+    """
+    if feature_type == "bow":
+        vectorizer_path = os.path.join(base_dir, "vectorizers", "bow_vectorizer.pkl")
+    elif feature_type == "tfidf":
+        vectorizer_path = os.path.join(base_dir, "vectorizers", "tfidf_vectorizer.pkl")
+    else:
+        return None  # Pas besoin de vectorizer pour embeddings ou handcrafted
+
+    if not os.path.exists(vectorizer_path):
+        raise FileNotFoundError(f"Vectorizer {vectorizer_path} introuvable.")
+
+    vectorizer = joblib.load(vectorizer_path)
+    print(f"✅ Vectorizer {feature_type} chargé.")
+    return vectorizer
+
+
 # -------------------------------
 # Prédiction pour un seul texte
 # -------------------------------
@@ -59,7 +87,7 @@ def predict_text_class(text, model_name, feature_type="bert"):
     Args:
         text (str): Texte d'entrée.
         model_name (str): Nom du modèle entraîné à utiliser.
-        feature_type (str): "bert", "roberta", "sbert" ou "handcrafted".
+        feature_type (str): "bert", "roberta", "sbert", "handcrafted", "bow" ou "tfidf".
 
     Returns:
         prediction (int): 0 = humain, 1 = LLM
@@ -67,7 +95,6 @@ def predict_text_class(text, model_name, feature_type="bert"):
 
     model, scaler = load_model_and_scaler(model_name, feature_type)
 
-    # Choix des features
     if feature_type == "bert":
         features = compute_bert_embedding(text)
     elif feature_type == "roberta":
@@ -75,7 +102,11 @@ def predict_text_class(text, model_name, feature_type="bert"):
     elif feature_type == "sbert":
         features = compute_sbert_embedding(text)
     elif feature_type == "handcrafted":
-        features = compute_handcrafted_features_one_text(text)  # à définir
+        features = compute_handcrafted_features_one_text(text)
+    elif feature_type in ("bow", "tfidf"):
+        # Charger vectorizer
+        vectorizer = load_vectorizer(feature_type)
+        features = vectorizer.transform([text]).toarray().flatten()  # Transformer + flatten
     else:
         raise ValueError(f"Feature type '{feature_type}' non reconnu.")
 

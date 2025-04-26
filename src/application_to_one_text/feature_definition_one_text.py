@@ -9,6 +9,7 @@ import re
 from nltk.corpus import stopwords, words
 from nltk.corpus import sentiwordnet as swn
 from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 
 # Télécharge les ressources nécessaires pour NLTK
 nltk.download('words')
@@ -33,7 +34,7 @@ def clean_word(word):
 
 # Fonction pour effectuer le POS tagging sur une liste de tokens
 def batch_pos_tag(tokenized_text):
-    """Effectue le POS tagging pour tous les textes d'un coup."""
+    """Effectue le POS tagging pour le texte."""
     return pos_tag(tokenized_text)
 
 
@@ -53,7 +54,7 @@ class extract_stylistic_features:
         total_characters = len(text)
         # Calculer la fréquence en pourcentage par rapport au nombre total de caractères
         quote_frequency = quote_count / total_characters if total_characters > 0 else 0
-        return quote_count, quote_frequency
+        return quote_frequency
 
     def punctuation_features(self, text):
         """ Calcule le nombre total de ponctuations
@@ -239,34 +240,43 @@ class extract_psychological_features():
         return pd.DataFrame([features])
 
 
+# -----------------------
+# Extraction de l'ensemble des caractéristiques
+# -----------------------
+
+
 def compute_handcrafted_features_one_text(text):
     """Calcule toutes les features pour un seul texte."""
-    tokenized_text = nltk.word_tokenize(text)
+    tokenized_text = word_tokenize(text)
 
-    # Extraire les features
+    # Stylistic features
     stylistic_extractor = extract_stylistic_features(text, tokenized_text)
+    stylistic_features_raw = stylistic_extractor.extract_features()
+
+    # --- Correct quote_frequency here ---
+    if isinstance(stylistic_features_raw["quote_frequency"], (tuple, list)):
+        stylistic_features_raw["quote_frequency"] = stylistic_features_raw["quote_frequency"][1]
+
+    # Complexity features
     complexity_extractor = extract_complexity_features(text, tokenized_text)
+    complexity_features_raw = complexity_extractor.extract_features()
+
+    # Psychological features
     psychological_extractor = extract_psychological_features(text, tokenized_text)
+    psychological_features_raw = psychological_extractor.extract_features()
 
-    stylistic_features = stylistic_extractor.extract_features()
-    complexity_features = complexity_extractor.extract_features()
-    psychological_features = psychological_extractor.extract_features().to_dict(orient='records')[0]
+    # Combine all features
+    all_features = {**stylistic_features_raw, **complexity_features_raw, **psychological_features_raw}
 
-    # ⚡️ Correction ici
-    all_features = {}
-
-    for key, value in stylistic_features.items():
-        if isinstance(value, tuple) or isinstance(value, list):
-            # si c'est un tuple (comme (12, 0.02)), on ajoute séparément
-            all_features[f"{key}_count"] = value[0]
-            all_features[f"{key}_freq"] = value[1]
+    # Force conversion de chaque valeur en float
+    clean_features = []
+    for val in all_features.values():
+        if isinstance(val, (list, tuple)):
+            clean_features.append(float(val[0]))  # on prend le premier élément si c'est une liste/tuple
         else:
-            all_features[key] = value
+            clean_features.append(float(val))
 
-    all_features.update(complexity_features)
-    all_features.update(psychological_features)
-
-    # Conversion en array
-    feature_vector = np.array(list(all_features.values()), dtype=float).reshape(1, -1)
+    # Conversion en array numpy
+    feature_vector = np.array(clean_features, dtype=float).reshape(1, -1)
 
     return feature_vector

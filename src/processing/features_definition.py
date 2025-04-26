@@ -52,7 +52,7 @@ class extract_stylistic_features:
         total_characters = len(text)
         # Calculer la fréquence en pourcentage par rapport au nombre total de caractères
         quote_frequency = quote_count / total_characters if total_characters > 0 else 0
-        return quote_count, quote_frequency
+        return quote_frequency
 
     def punctuation_features(self, text):
         """ Calcule le nombre total de ponctuations

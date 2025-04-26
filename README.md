@@ -1,6 +1,6 @@
 # ENSAE_NLP_project
 
-Utiliser un GPU pour calculer les embeddings et entraîner les modèles
+Utiliser un GPU pour calculer les embeddings (et entraîner les modèles pas forcément besoin, c'est plutôt rapide)
 
 Créer un environnement virtuel .venv avec uv, l'activer et installer les requirements :
 
@@ -17,5 +17,3 @@ ctrl + shift + P pour reload window
 
 puis ouvrir notebook et sélectionner le kernel qui vient d'être créé
 
-
-Créer un fichier .env et y entrer son token openAI (ou huggingface en fonction des modèles utilisés)

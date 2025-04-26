@@ -15,6 +15,7 @@ def get_available_models(feature_type):
                 available_models.append(model_name)
     return available_models
 
+
 # -------------------------------
 # Title
 # -------------------------------
@@ -36,7 +37,7 @@ st.sidebar.header("Configuration")
 # Select feature type
 feature_type = st.sidebar.selectbox(
     "Which type of features would you like to use?",
-    ("bert", "roberta", "sbert", "handcrafted")
+    ("bert", "roberta", "sbert", "handcrafted", "bow", "tfidf")  # <-- 🔥 ADD bow and tfidf here!
 )
 
 # Dynamically fetch available models based on feature_type
@@ -55,7 +56,6 @@ else:
 # -------------------------------
 # Text input area
 # -------------------------------
-
 
 st.subheader("Enter your text 👇")
 
