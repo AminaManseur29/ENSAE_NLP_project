@@ -17,10 +17,32 @@ It combines several feature extraction techniques, multiple machine learning cla
     - Class 0 → Human-written text
     - Class 1 → LLM-generated text
 
-## 🚀 Features
+---
+
+## 📚 Data and references
+### 📖 Survey for methodological overview:
+*"A Survey on LLM-Generated Text Detection: Necessity, Methods, and Future Directions"* [https://arxiv.org/pdf/2310.14724](https://arxiv.org/pdf/2310.14724)
+
+→ Helped guide the project by summarizing existing techniques for detecting LLM-generated text.
+
+### 📖 Handcrafted features design:
+*"Demystifying Neural Fake News via Linguistic Feature-Based Interpretation"* [https://aclanthology.org/2022.coling-1.573.pdf](https://aclanthology.org/2022.coling-1.573.pdf)
+
+→ Inspired the design of custom stylistic, complexity, and sentiment-based features.
+
+### 📂 Dataset Source:
+- GitHub Repository - *"SeqXGPT: Sentence-Level AI-Generated Text Detection"* [https://github.com/Jihuai-wpy/SeqXGPT](https://github.com/Jihuai-wpy/SeqXGPT)
+- From the paper [https://arxiv.org/pdf/2310.08903](https://arxiv.org/pdf/2310.08903)
+
+### 🚀 Embeddings computation based on:
+- Hugging Face Transformers library
+- Sentence-Transformers
+
+---
+
+## 🔎 Features and methods
 This project offers a pipeline for text classification, covering **feature extraction**, **model training**, **evaluation**, and **deployment**.
 
-### 🔎 Feature extraction methods
 - **BERT Embeddings** (`bert-base-cased`) : Generates deep semantic vector representations of texts using the BERT model.
 
 - **RoBERTa Embeddings** (`roberta-base`) : Uses the RoBERTa transformer model to produce rich contextual embeddings.
@@ -51,6 +73,31 @@ This project offers a pipeline for text classification, covering **feature extra
 
 --- 
 
+## 📊 Model performance summary
+
+| Feature Type  | Classifier           | Accuracy (%) | F1-Score (%) | Precision (%) | Recall (%) | Training Time (s) |
+|:-------------:|:--------------------:|:------------:|:------------:|:-------------:|:----------:|:-----------------:|
+| BERT          | Logistic Regression  | 80.8         | 80.7         | 80.8          | 80.8       | 7.6               |
+| BERT          | Linear SVC            | 81.3         | 81.2         | 81.3          | 81.3       | 11.5              |
+| BERT          | XGBoost               | 78.5         | 78.5         | 78.5          | 78.5       | 76.7              |
+| RoBERTa       | Logistic Regression   | 89.7         | 89.7         | 89.7          | 89.7       | 14.4              |
+| RoBERTa       | Linear SVC            | 89.8         | 89.7         | 89.8          | 89.8       | 10.3              |
+| RoBERTa       | XGBoost               | 86.8         | 86.8         | 86.8          | 86.8       | 71.4              |
+| SBERT         | Logistic Regression   | 60.5         | 60.5         | 60.5          | 60.5       | 3.9               |
+| SBERT         | Linear SVC            | 60.5         | 60.5         | 60.5          | 60.5       | 6.9               |
+| SBERT         | XGBoost               | 58.3         | 58.3         | 58.3          | 58.3       | 28.5              |
+| TF-IDF        | Logistic Regression   | 62.7         | 62.7         | 62.7          | 62.7       | 1.8               |
+| TF-IDF        | Linear SVC            | 62.5         | 62.5         | 62.5          | 62.5       | 4.4               |
+| TF-IDF        | XGBoost               | 65.1         | 65.1         | 65.1          | 65.1       | 43.3              |
+| Bag of Words  | Logistic Regression   | 62.1         | 62.1         | 62.1          | 62.1       | 2.6               |
+| Bag of Words  | Linear SVC            | 62.1         | 62.1         | 62.1          | 62.1       | 8.6               |
+| Bag of Words  | XGBoost               | 69.0         | 69.0         | 69.0          | 69.0       | 10.0              |
+| Handcrafted   | Logistic Regression   | 66.6         | 66.6         | 66.6          | 66.6       | 3.2               |
+| Handcrafted   | Linear SVC            | 66.8         | 66.8         | 66.9          | 66.8       | 1.4               |
+| Handcrafted   | XGBoost               | 76.0         | 76.0         | 76.0          | 76.0       | 1.7               |
+
+---
+
 ## 🎯 Application
 The Streamlit application allows you to:
 - Select the feature type (BERT, RoBERTa, SentenceBERT, handcrafted features, Bag of Words, or TF-IDF).
@@ -61,38 +108,6 @@ The Streamlit application allows you to:
 
 🌐 **Live demo available here** 👉[https://ensae-nlp-project-human-vs-llm-text-detection.streamlit.app/](https://ensae-nlp-project-human-vs-llm-text-detection.streamlit.app/)
 
----
-
-## 📂 Project structure
-The project is organized as follows:
-
-```bash
-ENSAE_NLP_project/
-├── outputs/                        # Directory for all saved artifacts
-│   ├── models/                     # Trained models (joblib format)
-│   ├── scalers/                    # StandardScaler objects used for preprocessing
-│   └── vectorizers/                # Bag of Words and TF-IDF vectorizers
-│
-├── src/
-│   └── application_to_one_text/    # Scripts for single-text prediction
-│       ├── embeddings_definition_one_text.py   # Compute embeddings for a single text
-│       ├── feature_definition_one_text.py      # Extract handcrafted features for a single text
-│       └── prediction.py                       # Load trained model and predict for one text
-│
-│   └── models/
-│       └── training_evaluation.py              # Train models and evaluate their performance
-│
-│   └── processing/
-│       ├── embeddings_definition.py            # Batch computation of embeddings
-│       └── features_definition.py               # Batch extraction of handcrafted features
-│
-├── app.py                       # Main Streamlit app for user interaction
-├── notebook.ipynb               # Exploratory notebook for initial experiments
-├── pyproject.toml               # Project configuration file
-├── README.md                    # Project description and instructions
-├── requirements.txt             # Python dependencies
-└── LICENSE                      # License information
-```
 ---
 
 ## ⚙️ Installation
@@ -154,49 +169,36 @@ Inside, you will find:
 
 ---
 
-## 📊 Model performance summary
+## 📂 Project structure
+The project is organized as follows:
 
-| Feature Type  | Classifier           | Accuracy (%) | F1-Score (%) | Precision (%) | Recall (%) | Training Time (s) |
-|:-------------:|:--------------------:|:------------:|:------------:|:-------------:|:----------:|:-----------------:|
-| BERT          | Logistic Regression  | 80.8         | 80.7         | 80.8          | 80.8       | 7.6               |
-| BERT          | Linear SVC            | 81.3         | 81.2         | 81.3          | 81.3       | 11.5              |
-| BERT          | XGBoost               | 78.5         | 78.5         | 78.5          | 78.5       | 76.7              |
-| RoBERTa       | Logistic Regression   | 89.7         | 89.7         | 89.7          | 89.7       | 14.4              |
-| RoBERTa       | Linear SVC            | 89.8         | 89.7         | 89.8          | 89.8       | 10.3              |
-| RoBERTa       | XGBoost               | 86.8         | 86.8         | 86.8          | 86.8       | 71.4              |
-| SBERT         | Logistic Regression   | 60.5         | 60.5         | 60.5          | 60.5       | 3.9               |
-| SBERT         | Linear SVC            | 60.5         | 60.5         | 60.5          | 60.5       | 6.9               |
-| SBERT         | XGBoost               | 58.3         | 58.3         | 58.3          | 58.3       | 28.5              |
-| TF-IDF        | Logistic Regression   | 62.7         | 62.7         | 62.7          | 62.7       | 1.8               |
-| TF-IDF        | Linear SVC            | 62.5         | 62.5         | 62.5          | 62.5       | 4.4               |
-| TF-IDF        | XGBoost               | 65.1         | 65.1         | 65.1          | 65.1       | 43.3              |
-| Bag of Words  | Logistic Regression   | 62.1         | 62.1         | 62.1          | 62.1       | 2.6               |
-| Bag of Words  | Linear SVC            | 62.1         | 62.1         | 62.1          | 62.1       | 8.6               |
-| Bag of Words  | XGBoost               | 69.0         | 69.0         | 69.0          | 69.0       | 10.0              |
-| Handcrafted   | Logistic Regression   | 66.6         | 66.6         | 66.6          | 66.6       | 3.2               |
-| Handcrafted   | Linear SVC            | 66.8         | 66.8         | 66.9          | 66.8       | 1.4               |
-| Handcrafted   | XGBoost               | 76.0         | 76.0         | 76.0          | 76.0       | 1.7               |
-
----
-
-## 📚 Data and sources of inspiration
-### 📖 Survey for methodological overview:
-*"A Survey on LLM-Generated Text Detection: Necessity, Methods, and Future Directions"* [https://arxiv.org/pdf/2310.14724](https://arxiv.org/pdf/2310.14724)
-
-→ Helped guide the project by summarizing existing techniques for detecting LLM-generated text.
-
-### 📖 Handcrafted features design:
-*"Demystifying Neural Fake News via Linguistic Feature-Based Interpretation"* [https://aclanthology.org/2022.coling-1.573.pdf](https://aclanthology.org/2022.coling-1.573.pdf)
-
-→ Inspired the design of custom stylistic, complexity, and sentiment-based features.
-
-### 📂 Dataset Source:
-- GitHub Repository - *"SeqXGPT: Sentence-Level AI-Generated Text Detection"* [https://github.com/Jihuai-wpy/SeqXGPT](https://github.com/Jihuai-wpy/SeqXGPT)
-- From the paper [https://arxiv.org/pdf/2310.08903](https://arxiv.org/pdf/2310.08903)
-
-🚀 **Embeddings computation based on**:
-- Hugging Face Transformers library
-- Sentence-Transformers
+```bash
+ENSAE_NLP_project/
+├── outputs/                        # Directory for all saved artifacts
+│   ├── models/                     # Trained models (joblib format)
+│   ├── scalers/                    # StandardScaler objects used for preprocessing
+│   └── vectorizers/                # Bag of Words and TF-IDF vectorizers
+│
+├── src/
+│   └── application_to_one_text/    # Scripts for single-text prediction
+│       ├── embeddings_definition_one_text.py   # Compute embeddings for a single text
+│       ├── feature_definition_one_text.py      # Extract handcrafted features for a single text
+│       └── prediction.py                       # Load trained model and predict for one text
+│
+│   └── models/
+│       └── training_evaluation.py              # Train models and evaluate their performance
+│
+│   └── processing/
+│       ├── embeddings_definition.py            # Batch computation of embeddings
+│       └── features_definition.py               # Batch extraction of handcrafted features
+│
+├── app.py                       # Main Streamlit app for user interaction
+├── notebook.ipynb               # Exploratory notebook for initial experiments
+├── pyproject.toml               # Project configuration file
+├── README.md                    # Project description and instructions
+├── requirements.txt             # Python dependencies
+└── LICENSE                      # License information
+```
 ---
 
 ## ✨ Credits
