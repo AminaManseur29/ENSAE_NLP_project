@@ -8,3 +8,4 @@ uv.lock
 *.pyd
 __pycache__/
 **/__pycache__/
+core
