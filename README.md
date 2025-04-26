@@ -180,17 +180,17 @@ Inside, you will find:
 ---
 
 ## 📚 Data and sources of inspiration
-📖 **Survey for methodological overview**:
+### 📖 Survey for methodological overview:
 *"A Survey on LLM-Generated Text Detection: Necessity, Methods, and Future Directions"* [https://arxiv.org/pdf/2310.14724](https://arxiv.org/pdf/2310.14724)
 
 → Helped guide the project by summarizing existing techniques for detecting LLM-generated text.
 
-📖 **Handcrafted features design**:
+### 📖 Handcrafted features design:
 *"Demystifying Neural Fake News via Linguistic Feature-Based Interpretation"* [https://aclanthology.org/2022.coling-1.573.pdf](https://aclanthology.org/2022.coling-1.573.pdf)
 
 → Inspired the design of custom stylistic, complexity, and sentiment-based features.
 
-📂 **Dataset Source**:
+### 📂 Dataset Source:
 - GitHub Repository - *"SeqXGPT: Sentence-Level AI-Generated Text Detection"* [https://github.com/Jihuai-wpy/SeqXGPT](https://github.com/Jihuai-wpy/SeqXGPT)
 - From the paper [https://arxiv.org/pdf/2310.08903](https://arxiv.org/pdf/2310.08903)
 
