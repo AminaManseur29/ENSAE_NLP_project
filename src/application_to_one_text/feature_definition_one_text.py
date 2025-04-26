@@ -266,13 +266,15 @@ def compute_handcrafted_features_one_text(text):
     psychological_features_raw = psychological_extractor.extract_features()
 
     # Combine all features
-    all_features = {**stylistic_features_raw, **complexity_features_raw, **psychological_features_raw}
+    all_features = {
+        **stylistic_features_raw, **complexity_features_raw, **psychological_features_raw
+        }
 
     # Force conversion de chaque valeur en float
     clean_features = []
     for val in all_features.values():
         if isinstance(val, (list, tuple)):
-            clean_features.append(float(val[0]))  # on prend le premier élément si c'est une liste/tuple
+            clean_features.append(float(val[0]))
         else:
             clean_features.append(float(val))
 
