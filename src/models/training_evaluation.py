@@ -1,69 +1,78 @@
-import os
 import time
+import os
 import joblib
 import pandas as pd
+from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
+# -----------------------------------------------
+# Fonction principale d'entraînement et tuning
+# -----------------------------------------------
 
-def train_and_evaluate_models(
-    model_names,
-    x_train,
-    y_train,
-    x_test,
-    y_test,
-    output_dir="outputs/",
-    save_models=True
-):
+
+def train_and_tune_models(x_train, y_train, x_test, y_test, feature_type):
     """
-    Entraîne et évalue une liste de modèles spécifiés.
-
-    Args:
-        model_names (list or str): Liste des modèles ou un seul modèle 
-        ("LogisticRegression", "LinearSVC", "XGBoost").
-        x_train (array): Données d'entraînement.
-        y_train (array): Labels d'entraînement.
-        x_test (array): Données de test.
-        y_test (array): Labels de test.
-        output_dir (str): Dossier pour sauvegarder les modèles.
-        save_models (bool): Si True, sauvegarde les modèles entraînés.
-
-    Returns:
-        DataFrame avec les scores des modèles.
+    Entraîne et tune 3 modèles classiques (LogReg, LinearSVC, XGBoost)
+    sur les données x_train / y_train
+    et évalue sur x_test / y_test.
+    feature_type : str (ex: 'bert', 'roberta', 'sbert', 'bow', 'tfidf', 'handcrafted')
     """
-
-    # Si on passe un seul modèle en string, on transforme en liste
-    if isinstance(model_names, str):
-        model_names = [model_names]
-
-    # Définir les modèles disponibles
-    all_models = {
-        "LogisticRegression": LogisticRegression(max_iter=1000, random_state=42),
-        "LinearSVC": LinearSVC(max_iter=10000, random_state=42),
-        "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+    models_and_params = {
+        f"LogisticRegression_{feature_type}": (
+            LogisticRegression(max_iter=1000, random_state=42),
+            {
+                "C": [0.01, 0.1, 1, 10],
+                "penalty": ["l2"],
+                "solver": ["lbfgs"]
+            }
+        ),
+        f"LinearSVC_{feature_type}": (
+            LinearSVC(max_iter=10000, random_state=42),
+            {
+                "C": [0.01, 0.1, 1, 10],
+                "loss": ["squared_hinge"]
+            }
+        ),
+        f"XGBoost_{feature_type}": (
+            XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42),
+            {
+                "n_estimators": [100, 200],
+                "max_depth": [3, 6],
+                "learning_rate": [0.01, 0.1]
+            }
+        )
     }
 
-    # Garde seulement les modèles demandés
-    models = {name: all_models[name] for name in model_names}
-
-    # Créer le dossier de sauvegarde si besoin
-    os.makedirs(output_dir, exist_ok=True)
+    # Dossier output
+    os.makedirs('outputs/models', exist_ok=True)
 
     results = []
 
-    for name, model in models.items():
-        print(f"Training {name}...")
-
+    for name, (model, params) in models_and_params.items():
+        print(f"\nTraining and tuning {name}...")
         start_time = time.time()
 
-        model.fit(x_train, y_train)
+        grid_search = GridSearchCV(
+            model,
+            param_grid=params,
+            cv=3,
+            scoring="accuracy",
+            n_jobs=-1,
+            verbose=1
+        )
+        grid_search.fit(x_train, y_train)
 
+        best_model = grid_search.best_estimator_
         training_time = time.time() - start_time
-        print(f"Training time for {name}: {training_time:.2f} seconds")
 
-        y_pred = model.predict(x_test)
+        print(f"Best params for {name}: {grid_search.best_params_}")
+        print(f"Training time: {training_time:.2f} seconds")
+
+        # Évaluation
+        y_pred = best_model.predict(x_test)
 
         acc = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred, average="weighted")
@@ -72,6 +81,7 @@ def train_and_evaluate_models(
 
         results.append({
             "Model": name,
+            "Best Params": grid_search.best_params_,
             "Accuracy": acc,
             "F1-Score": f1,
             "Precision": precision,
@@ -79,9 +89,11 @@ def train_and_evaluate_models(
             "Training Time (s)": training_time
         })
 
-        if save_models:
-            model_path = os.path.join(output_dir, f"{name}_model.joblib")
-            joblib.dump(model, model_path)
-            print(f"{name} enregistré dans {model_path} ✅")
+        # Sauvegarde du modèle
+        model_path = f"outputs/models/{name}_model.joblib"
+        joblib.dump(best_model, model_path)
+        print(f"{name} enregistré dans {model_path} ✅")
 
-    return pd.DataFrame(results)
+    # Résultats finaux
+    results_df = pd.DataFrame(results)
+    return results_df
