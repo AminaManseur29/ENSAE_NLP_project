@@ -16,6 +16,7 @@ dependencies = [
     "nltk>=3.9.1",
     "pandas>=2.2.3",
     "pyenchant>=3.2.2",
+    "pyspellchecker>=0.8.2",
     "seaborn>=0.13.2",
     "sentence-transformers>=4.1.0",
     "transformers>=4.51.3",

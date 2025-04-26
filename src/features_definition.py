@@ -3,7 +3,6 @@ caractéristiques de complexité et psychologiques. """
 
 import pandas as pd
 import nltk
-import nltk
 import string
 import enchant
 import re
