@@ -9,7 +9,8 @@ def get_available_models(feature_type):
     available_models = []
     if os.path.exists(models_dir):
         for filename in os.listdir(models_dir):
-            if filename.endswith("_model.joblib") and feature_type in filename:
+            # Check if the filename matches exactly the expected pattern
+            if filename.endswith(f"_{feature_type}_model.joblib"):
                 model_name = filename.replace("_model.joblib", "")
                 available_models.append(model_name)
     return available_models
