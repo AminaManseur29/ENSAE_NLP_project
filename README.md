@@ -20,7 +20,7 @@ It combines several feature extraction techniques, multiple machine learning cla
 ## 🚀 Features
 This project offers a pipeline for text classification, covering **feature extraction**, **model training**, **evaluation**, and **deployment**.
 
-### 🔎 Feature Extraction Methods
+### 🔎 Feature extraction methods
 - **BERT Embeddings** (`bert-base-cased`)
     → Generates deep semantic vector representations of texts using the BERT model.
 
@@ -43,7 +43,7 @@ This project offers a pipeline for text classification, covering **feature extra
     → Weighted word representations focusing on important but less frequent terms.
 ---
 
-## 🛠️ Model Training and Evaluation
+## 🛠️ Model training and evaluation
 - **Classifiers implemented**:
     - Logistic Regression
     - Linear Support Vector Machine (LinearSVC)
@@ -54,6 +54,8 @@ This project offers a pipeline for text classification, covering **feature extra
 
 - **Saving Trained Models and Scalers**:
     - Each trained model and its corresponding scaler are saved separately in the `outputs/` directory for reproducibility and easy deployment.
+
+--- 
 
 ## 🎯 Application
 The Streamlit application allows you to:
@@ -67,7 +69,7 @@ The Streamlit application allows you to:
 
 ---
 
-## 📂 Project Structure
+## 📂 Project structure
 The project is organized as follows:
 
 ```bash
@@ -109,12 +111,13 @@ cd ENSAE_NLP_project
 ```
 
 ### 2. Create and activate a virtual environment
-If you are using SSPCloud:
-    - First deactivate the default conda environment:
+If you are using SSPCloud, first deactivate the default conda environment:
 ```bash
 conda deactivate
 ```
-    - Create a new .venv environment using uv:
+
+Create a new .venv environment using uv:
+
 ```bash
 pip install uv
 uv venv .venv
@@ -155,48 +158,51 @@ Inside, you will find:
 - 📈 Evaluation and comparison of model performance,
 - 💾 Saving all trained models and preprocessing tools (scalers, vectorizers, etc.).
 
-This notebook offers a full overview — from raw data to ready-to-use models! 🚀
 ---
 
-## 📊 Model Performance Summary
+## 📊 Model performance summary
 
-| Feature Type | Classifier            | Accuracy (%) | F1-Score (%) | Precision (%) | Recall (%) | Training Time (s) |
-|:------------:|:---------------------:|:------------:|:------------:|:-------------:|:-----------------:|
-| BERT         | Logistic Regression    | 80.8         | 80.7         | 80.8          | 80.8        | 7.6            |
-| BERT         | Linear SVC              | 81.3         | 81.2         | 81.3          | 81.3        | 11.5             |
-| BERT         | XGBoost                 | 78.5         | 78.5         | 78.5          | 78.5         | 76.7              |
-| RoBERTa      | Logistic Regression     | 89.7         | 89.7         | 89.7          | 89.7         | 14.4         |
-| RoBERTa      | Linear SVC              | 89.8         | 89.7         | 89.8          | 89.8         | 10.3         |
-| RoBERTa      | XGBoost                 | 86.8         | 86.8         | 86.8          | 86.8         | 71.4        |
-| SBERT        | Logistic Regression     | 60.5         | 60.5         | 60.5          | 60.5         | 3.9               |
-| SBERT        | Linear SVC              | 60.5         | 60.5         | 60.5          | 60.5         | 6.9               |
-| SBERT        | XGBoost                 | 58.3         | 58.3         | 58.3          | 58.3         | 28.5              |
-| TF-IDF       | Logistic Regression     | 62.7         | 62.7         | 62.7          | 62.7         | 1.8               |
-| TF-IDF       | Linear SVC              | 62.5         | 62.5         | 62.5          | 62.5         | 4.4               |
-| TF-IDF       | XGBoost                 | 65.1         | 65.1         | 65.1          | 65.1         | 43.3              |
-| Bag of Words | Logistic Regression     | 62.1         | 62.1         | 62.1          | 62.1         | 2.6               |
-| Bag of Words | Linear SVC              | 62.1         | 62.1         | 62.1          | 62.1         | 8.6	             |
-| Bag of Words | XGBoost                 | 69.0         | 69.0         | 69.0          |69.0              | 10.0               |
-| Handcrafted  | Logistic Regression     | 66.6         | 66.6         | 66.6          | 66.6         | 3.2               |
-| Handcrafted  | Linear SVC              | 66.8         | 66.8         | 66.9          | 66.8         | 1.4               |
-| Handcrafted  | XGBoost                 | 76.0         | 76.0         | 76.0          |  76.0        | 1.7               |
+| Feature Type  | Classifier           | Accuracy (%) | F1-Score (%) | Precision (%) | Recall (%) | Training Time (s) |
+|:-------------:|:--------------------:|:------------:|:------------:|:-------------:|:----------:|:-----------------:|
+| BERT          | Logistic Regression  | 80.8         | 80.7         | 80.8          | 80.8       | 7.6               |
+| BERT          | Linear SVC            | 81.3         | 81.2         | 81.3          | 81.3       | 11.5              |
+| BERT          | XGBoost               | 78.5         | 78.5         | 78.5          | 78.5       | 76.7              |
+| RoBERTa       | Logistic Regression   | 89.7         | 89.7         | 89.7          | 89.7       | 14.4              |
+| RoBERTa       | Linear SVC            | 89.8         | 89.7         | 89.8          | 89.8       | 10.3              |
+| RoBERTa       | XGBoost               | 86.8         | 86.8         | 86.8          | 86.8       | 71.4              |
+| SBERT         | Logistic Regression   | 60.5         | 60.5         | 60.5          | 60.5       | 3.9               |
+| SBERT         | Linear SVC            | 60.5         | 60.5         | 60.5          | 60.5       | 6.9               |
+| SBERT         | XGBoost               | 58.3         | 58.3         | 58.3          | 58.3       | 28.5              |
+| TF-IDF        | Logistic Regression   | 62.7         | 62.7         | 62.7          | 62.7       | 1.8               |
+| TF-IDF        | Linear SVC            | 62.5         | 62.5         | 62.5          | 62.5       | 4.4               |
+| TF-IDF        | XGBoost               | 65.1         | 65.1         | 65.1          | 65.1       | 43.3              |
+| Bag of Words  | Logistic Regression   | 62.1         | 62.1         | 62.1          | 62.1       | 2.6               |
+| Bag of Words  | Linear SVC            | 62.1         | 62.1         | 62.1          | 62.1       | 8.6               |
+| Bag of Words  | XGBoost               | 69.0         | 69.0         | 69.0          | 69.0       | 10.0              |
+| Handcrafted   | Logistic Regression   | 66.6         | 66.6         | 66.6          | 66.6       | 3.2               |
+| Handcrafted   | Linear SVC            | 66.8         | 66.8         | 66.9          | 66.8       | 1.4               |
+| Handcrafted   | XGBoost               | 76.0         | 76.0         | 76.0          | 76.0       | 1.7               |
 
 ---
 
 ## 📚 Data and sources of inspiration
-- 📖 Survey for Methodological Overview:
+- 📖 **Survey for methodological overview**:
 *"A Survey on LLM-Generated Text Detection: Necessity, Methods, and Future Directions"* [https://arxiv.org/pdf/2310.14724](https://arxiv.org/pdf/2310.14724)
+
     → Helped guide the project by summarizing existing techniques for detecting LLM-generated text.
 
-- 📖 Handcrafted Features Design:
+- 📖 **Handcrafted features design**:
 *"Demystifying Neural Fake News via Linguistic Feature-Based Interpretation"* [https://aclanthology.org/2022.coling-1.573.pdf](https://aclanthology.org/2022.coling-1.573.pdf)
+
     → Inspired the design of custom stylistic, complexity, and sentiment-based features.
 
-- 📂 Dataset Source:
+- 📂 **Dataset Source**:
+
 GitHub Repository - *"SeqXGPT: Sentence-Level AI-Generated Text Detection"* [https://github.com/Jihuai-wpy/SeqXGPT](https://github.com/Jihuai-wpy/SeqXGPT)
+
 From the paper [https://arxiv.org/pdf/2310.08903](https://arxiv.org/pdf/2310.08903)
 
-- 🚀 Embeddings computation based on:
+- 🚀 **Embeddings computation based on**:
     - Hugging Face Transformers library
     - Sentence-Transformers
 ---
