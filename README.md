@@ -15,7 +15,7 @@ python -m ipykernel install --user --name ensae-nlp --display-name "ENSAE NLP (u
 
 ctrl + shift + P pour reload window
 
-puis ouvrir notebook
+puis ouvrir notebook et sélectionner le kernel qui vient d'être créé
 
 
 Créer un fichier .env et y entrer son token openAI (ou huggingface en fonction des modèles utilisés)

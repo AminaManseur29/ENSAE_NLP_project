@@ -1,16 +1,15 @@
-""" Contient des fonctions de prétraitement pour la définition des caractértistiques stylistiques, 
+""" Contient des fonctions de prétraitement pour la définition des caractértistiques stylistiques,
 caractéristiques de complexité et psychologiques. """
 
 import pandas as pd
+import nltk
 import nltk
 import string
 import enchant
 import re
 from nltk.corpus import stopwords
 from nltk.corpus import sentiwordnet as swn
-
 from nltk.tag import pos_tag
-from nltk.corpus import sentiwordnet as swn
 
 # Télécharge les ressources nécessaires pour NLTK
 nltk.download('stopwords')
@@ -24,6 +23,7 @@ stop_words = set(stopwords.words('english'))
 # -----------------------
 # Extraction des caractéristiques stylistiques
 # -----------------------
+
 
 class extract_stylistic_features:
     """ Extrait les caractéristiques stylistiques du texte. """
@@ -44,7 +44,8 @@ class extract_stylistic_features:
         return quote_count, quote_frequency
 
     def punctuation_features(self, text):
-        """ Calcule le nombre total de ponctuations et le nombre de ponctuations uniques dans le texte. """
+        """ Calcule le nombre total de ponctuations
+        et le nombre de ponctuations uniques dans le texte. """
         punctuation_count = sum(1 for char in text if char in string.punctuation)
         unique_punctuation_count = len(set(char for char in text if char in string.punctuation))
         return punctuation_count, unique_punctuation_count
@@ -61,7 +62,9 @@ class extract_stylistic_features:
 
     def camel_case_frequency(self, tokenized_text):
         """ Calcule la fréquence des mots en camel case dans le texte. """
-        camel_case_count = sum(1 for word in tokenized_text if word[0].isupper() and any(c.islower() for c in word[1:]))
+        camel_case_count = sum(
+            1 for word in tokenized_text if word[0].isupper() and any(c.islower() for c in word[1:])
+            )
         return camel_case_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
 
     def negation_frequency(self, tokenized_text):
@@ -135,15 +138,15 @@ class extract_stylistic_features:
                 "punctuation_count": ponctuation_count,
                 "unique_punctuation_count": unique_punctuation_count,
                 "exclamation_frequency": self.exclamation_frequency(text),
-                "stopword_frequency": self.stopword_frequency(text),
-                "camel_case_frequency": self.camel_case_frequency(text),
-                "negation_frequency": self.negation_frequency(text),
-                "proper_noun_frequency": self.proper_nouns_frequency(text),
+                "stopword_frequency": self.stopword_frequency(tokenized_text),
+                "camel_case_frequency": self.camel_case_frequency(tokenized_text),
+                "negation_frequency": self.negation_frequency(tokenized_text),
+                "proper_noun_frequency": self.proper_nouns_frequency(tokenized_text),
                 "user_mentions_frequency": self.user_mentions_frequency(text),
                 "hashtag_frequency": self.hashtags_frequency(text),
-                "misspelled_words": self.misspelled_words(text),
-                "oov_frequency": self.oov_frequency(text),
-                "noun_frequency": self.noun_frequency(text),
+                "misspelled_words": self.misspelled_words(tokenized_text),
+                "oov_frequency": self.oov_frequency(tokenized_text),
+                "noun_frequency": self.noun_frequency(tokenized_text),
                 "past_tense_frequency": self.past_tense_frequency(tokenized_text),
                 "verb_frequency": self.verb_frequency(tokenized_text),
                 "interrogative_frequency": self.interrogative_frequency(tokenized_text),
@@ -156,6 +159,7 @@ class extract_stylistic_features:
 # Extraction des caractéristiques de complexité
 # -----------------------
 
+
 class extract_complexity_features():
     def __init__(self, texts, tokenized_texts):
         self.texts = texts
@@ -164,7 +168,9 @@ class extract_complexity_features():
     def word_count_and_mean_length(self, tokenized_text):
         """ Calcule le nombre total de mots et la longueur moyenne des mots dans le texte. """
         word_count = len(tokenized_text)
-        mean_length = sum(len(word) for word in tokenized_text) / word_count if word_count > 0 else 0
+        mean_length = sum(
+            len(word) for word in tokenized_text
+            ) / word_count if word_count > 0 else 0
         return word_count, mean_length
 
     def ttr(self, tokenized_text):
@@ -203,7 +209,7 @@ class extract_complexity_features():
             }
             features_list.append(features)
         return pd.DataFrame(features_list)
-    
+
 
 # -----------------------
 # Extraction des caractéristiques psychologiques
@@ -234,4 +240,3 @@ class extract_psychological_features():
             }
             features_list.append(features)
         return pd.DataFrame(features_list)
-
