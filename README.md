@@ -200,7 +200,7 @@ Inside, you will find:
 ---
 
 ## ✨ Credits
-- Project developed by **Amina Manseur** (@AminaManseur29)
+- Project developed by **Amina Manseur** [@AminaManseur29](https://github.com/AminaManseur29)
 - ENSAE Paris - Natural Language Processing Project (2025)
 
 ---
