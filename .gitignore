@@ -1,6 +1,7 @@
 venv/
 .venv/
 .env
+data/
 uv.lock
 *.pyc
 *.pyo

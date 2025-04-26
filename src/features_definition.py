@@ -4,7 +4,6 @@ caractéristiques de complexité et psychologiques. """
 import pandas as pd
 import nltk
 import string
-import enchant
 import re
 from nltk.corpus import stopwords, words
 from nltk.corpus import sentiwordnet as swn
@@ -25,14 +24,17 @@ english_vocab = set(words.words())
 # Extraction des caractéristiques stylistiques
 # -----------------------
 
+
 # Fonction pour nettoyer un mot
 def clean_word(word):
     return ''.join(c for c in word if c.isalpha())
+
 
 # Fonction pour effectuer le POS tagging sur une liste de tokens
 def batch_pos_tag(tokenized_texts):
     """Effectue le POS tagging pour tous les textes d'un coup."""
     return [pos_tag(tokens) for tokens in tokenized_texts]
+
 
 class extract_stylistic_features:
     """ Extrait les caractéristiques stylistiques du texte. """
@@ -96,18 +98,18 @@ class extract_stylistic_features:
         """ Calcule la fréquence des hashtags dans le texte. """
         hashtags = text.count('#')
         return hashtags / len(text.split()) if len(text.split()) > 0 else 0
-    
+
     def misspelled_words_frequency(self, tokenized_text):
         """Calcule la fréquence des mots mal orthographiés parmi les vrais mots."""
         # Nettoyer les mots et ne garder que ceux qui sont vraiment alphabétiques
         clean_tokens = [clean_word(word).lower() for word in tokenized_text if clean_word(word)]
-        
+
         if len(clean_tokens) == 0:
             return 0  # éviter une division par zéro
-        
+
         misspelled_count = sum(1 for word in clean_tokens if word not in english_vocab)
         return misspelled_count / len(clean_tokens)
-    
+
     def oov_frequency(self, tokenized_text):
         """ Calcule la fréquence des mots hors vocabulaire dans le texte. """
         oov_count = sum(1 for word in tokenized_text if list(swn.senti_synsets(word)))
