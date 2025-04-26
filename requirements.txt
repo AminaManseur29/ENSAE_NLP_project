@@ -42,6 +42,7 @@ platformdirs
 prompt_toolkit
 psutil
 pure_eval
+pyenchant==3.2.2
 Pygments
 pyparsing
 python-dateutil

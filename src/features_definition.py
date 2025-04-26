@@ -6,23 +6,33 @@ import nltk
 import string
 import enchant
 import re
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, words
 from nltk.corpus import sentiwordnet as swn
 from nltk.tag import pos_tag
 
 # Télécharge les ressources nécessaires pour NLTK
+nltk.download('words')
 nltk.download('stopwords')
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
+nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('sentiwordnet')
 
 stop_words = set(stopwords.words('english'))
+english_vocab = set(words.words())
 
 # -----------------------
 # Extraction des caractéristiques stylistiques
 # -----------------------
 
+# Fonction pour nettoyer un mot
+def clean_word(word):
+    return ''.join(c for c in word if c.isalpha())
+
+# Fonction pour effectuer le POS tagging sur une liste de tokens
+def batch_pos_tag(tokenized_texts):
+    """Effectue le POS tagging pour tous les textes d'un coup."""
+    return [pos_tag(tokens) for tokens in tokenized_texts]
 
 class extract_stylistic_features:
     """ Extrait les caractéristiques stylistiques du texte. """
@@ -72,11 +82,10 @@ class extract_stylistic_features:
         negation_count = sum(1 for word in tokenized_text if word.lower() in negation_words)
         return negation_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
 
-    def proper_nouns_frequency(self, tokenized_text):
-        """ Calcule la fréquence des noms propres dans le texte. """
-        tagged_words = pos_tag(tokenized_text)
-        proper_noun_count = sum(1 for word, tag in tagged_words if tag in ['NNP', 'NNPS'])
-        return proper_noun_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
+    def proper_nouns_frequency(self, tagged_text):
+        """Calcule la fréquence des noms propres dans le texte."""
+        proper_noun_count = sum(1 for word, tag in tagged_text if tag in ['NNP', 'NNPS'])
+        return proper_noun_count / len(tagged_text) if len(tagged_text) > 0 else 0
 
     def user_mentions_frequency(self, text):
         """ Calcule la fréquence des mentions d'utilisateur dans le texte. """
@@ -87,50 +96,48 @@ class extract_stylistic_features:
         """ Calcule la fréquence des hashtags dans le texte. """
         hashtags = text.count('#')
         return hashtags / len(text.split()) if len(text.split()) > 0 else 0
-
-    def misspelled_words(self, tokenized_text):
-        """ Calcule le nombre de mots mal orthographiés dans le texte. """
-        d = enchant.Dict("en_US")
-        misspelled_count = sum(1 for word in tokenized_text if not d.check(word))
-        return misspelled_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
-
+    
+    def misspelled_words_frequency(self, tokenized_text):
+        """Calcule la fréquence des mots mal orthographiés parmi les vrais mots."""
+        # Nettoyer les mots et ne garder que ceux qui sont vraiment alphabétiques
+        clean_tokens = [clean_word(word).lower() for word in tokenized_text if clean_word(word)]
+        
+        if len(clean_tokens) == 0:
+            return 0  # éviter une division par zéro
+        
+        misspelled_count = sum(1 for word in clean_tokens if word not in english_vocab)
+        return misspelled_count / len(clean_tokens)
+    
     def oov_frequency(self, tokenized_text):
         """ Calcule la fréquence des mots hors vocabulaire dans le texte. """
         oov_count = sum(1 for word in tokenized_text if list(swn.senti_synsets(word)))
         return oov_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
 
-    def noun_frequency(self, tokenized_text):
-        """ Calcule la fréquence des noms dans le texte. """
-        tagged_words = pos_tag(tokenized_text)
+    def noun_frequency(self, tagged_words):
         noun_count = sum(1 for word, tag in tagged_words if tag in ['NN', 'NNS', 'NNP', 'NNPS'])
-        return noun_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
+        return noun_count / len(tagged_words) if len(tagged_words) > 0 else 0
 
-    def past_tense_frequency(self, tokenized_text):
-        """ Calcule la fréquence des verbes au passé dans le texte. """
-        tagged_words = pos_tag(tokenized_text)
+    def past_tense_frequency(self, tagged_words):
         past_tense_count = sum(1 for word, tag in tagged_words if tag in ['VBD', 'VBN'])
-        return past_tense_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
+        return past_tense_count / len(tagged_words) if len(tagged_words) > 0 else 0
 
-    def verb_frequency(self, tokenized_text):
-        """ Calcule la fréquence des verbes dans le texte. """
-        tagged_words = pos_tag(tokenized_text)
+    def verb_frequency(self, tagged_words):
         verb_count = sum(1 for word, tag in tagged_words if tag.startswith('VB'))
-        return verb_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
+        return verb_count / len(tagged_words) if len(tagged_words) > 0 else 0
 
-    def interrogative_frequency(self, tokenized_text):
-        """ Calcule la fréquence des phrases interrogatives dans le texte. """
-        tagged_words = pos_tag(tokenized_text)
+    def interrogative_frequency(self, tagged_words):
         interrogative_count = sum(1 for word, tag in tagged_words if tag in ['WRB', 'WDT', 'WP'])
-        return interrogative_count / len(tokenized_text) if len(tokenized_text) > 0 else 0
+        return interrogative_count / len(tagged_words) if len(tagged_words) > 0 else 0
 
     def extract_features(self):
         """ Extrait toutes les caractéristiques stylistiques pour chaque texte. """
         texts = self.texts
         tokenized_texts = self.tokenized_texts
+        tagged_texts = batch_pos_tag(tokenized_texts)
 
         features_list = []
 
-        for text, tokenized_text in zip(texts, tokenized_texts):
+        for text, tokenized_text, tagged_text in zip(texts, tokenized_texts, tagged_texts):
             ponctuation_count, unique_punctuation_count = self.punctuation_features(text)
             features = {
                 "quote_frequency": self.quote_frequency(text),
@@ -140,15 +147,15 @@ class extract_stylistic_features:
                 "stopword_frequency": self.stopword_frequency(tokenized_text),
                 "camel_case_frequency": self.camel_case_frequency(tokenized_text),
                 "negation_frequency": self.negation_frequency(tokenized_text),
-                "proper_noun_frequency": self.proper_nouns_frequency(tokenized_text),
+                "proper_noun_frequency": self.proper_nouns_frequency(tagged_text),
                 "user_mentions_frequency": self.user_mentions_frequency(text),
                 "hashtag_frequency": self.hashtags_frequency(text),
-                "misspelled_words": self.misspelled_words(tokenized_text),
+                "misspelled_words": self.misspelled_words_frequency(tokenized_text),
                 "oov_frequency": self.oov_frequency(tokenized_text),
-                "noun_frequency": self.noun_frequency(tokenized_text),
-                "past_tense_frequency": self.past_tense_frequency(tokenized_text),
-                "verb_frequency": self.verb_frequency(tokenized_text),
-                "interrogative_frequency": self.interrogative_frequency(tokenized_text),
+                "noun_frequency": self.noun_frequency(tagged_text),
+                "past_tense_frequency": self.past_tense_frequency(tagged_text),
+                "verb_frequency": self.verb_frequency(tagged_text),
+                "interrogative_frequency": self.interrogative_frequency(tagged_text),
             }
             features_list.append(features)
 
