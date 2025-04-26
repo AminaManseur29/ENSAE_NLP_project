@@ -21,7 +21,7 @@ from src.application_to_one_text.feature_definition_one_text import (
 # -------------------------------
 
 
-def load_model_and_scaler(model_name, base_dir="outputs"):
+def load_model_and_scaler(model_name, feature_type, base_dir="outputs"):
     """
     Charge un modèle et son scaler associés depuis le dossier `outputs/`.
 
@@ -33,7 +33,7 @@ def load_model_and_scaler(model_name, base_dir="outputs"):
         model, scaler
     """
     model_path = os.path.join(base_dir, "models", f"{model_name}_model.joblib")
-    scaler_path = os.path.join(base_dir, "scalers", f"{model_name}_scaler.joblib")
+    scaler_path = os.path.join(base_dir, "scalers", f"{feature_type}_scaler.pkl")
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Modèle {model_path} introuvable.")
@@ -65,7 +65,7 @@ def predict_text_class(text, model_name, feature_type="bert"):
         prediction (int): 0 = humain, 1 = LLM
     """
 
-    model, scaler = load_model_and_scaler(model_name)
+    model, scaler = load_model_and_scaler(model_name, feature_type)
 
     # Choix des features
     if feature_type == "bert":
