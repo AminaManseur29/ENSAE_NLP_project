@@ -236,30 +236,37 @@ class extract_psychological_features():
         features = {
             "sentiment_score": self.sentiment_score(tokenized_text)
         }
-        return pd.DataFrame(features)
+        return pd.DataFrame([features])
 
 
 def compute_handcrafted_features_one_text(text):
-    """Extrait toutes les caractéristiques stylistiques,
-    de complexité et psychologiques d'un seul texte."""
+    """Calcule toutes les features pour un seul texte."""
+    tokenized_text = nltk.word_tokenize(text)
 
-    # 1. Tokenisation simple
-    tokens = nltk.word_tokenize(text)
+    # Extraire les features
+    stylistic_extractor = extract_stylistic_features(text, tokenized_text)
+    complexity_extractor = extract_complexity_features(text, tokenized_text)
+    psychological_extractor = extract_psychological_features(text, tokenized_text)
 
-    # 2. Extraction des features
-    stylistic_extractor = extract_stylistic_features(text, tokens)
     stylistic_features = stylistic_extractor.extract_features()
-
-    complexity_extractor = extract_complexity_features(text, tokens)
     complexity_features = complexity_extractor.extract_features()
-
-    psychological_extractor = extract_psychological_features(text, tokens)
     psychological_features = psychological_extractor.extract_features().to_dict(orient='records')[0]
 
-    # 3. Fusion de toutes les features
-    all_features = {**stylistic_features, **complexity_features, **psychological_features}
+    # ⚡️ Correction ici
+    all_features = {}
 
-    # Transformer en numpy array (1, nb_features)
+    for key, value in stylistic_features.items():
+        if isinstance(value, tuple) or isinstance(value, list):
+            # si c'est un tuple (comme (12, 0.02)), on ajoute séparément
+            all_features[f"{key}_count"] = value[0]
+            all_features[f"{key}_freq"] = value[1]
+        else:
+            all_features[key] = value
+
+    all_features.update(complexity_features)
+    all_features.update(psychological_features)
+
+    # Conversion en array
     feature_vector = np.array(list(all_features.values()), dtype=float).reshape(1, -1)
 
     return feature_vector
