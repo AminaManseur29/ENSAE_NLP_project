@@ -167,6 +167,7 @@ Three cases can occur:
 All the work is documented in a single notebook: notebook.ipynb.
 Inside, you will find:
 - 📚 Building of the training and testing datasets,
+- 📊 A descriptive analysis of the dataset, highlighting key characteristics and differences between human-written and LLM-generated texts,
 - ⚙️ Training multiple models using different feature representations,
 - 📈 Evaluation and comparison of model performance,
 - 💾 Saving all trained models and preprocessing tools (scalers, vectorizers, etc.).
