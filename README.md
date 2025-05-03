@@ -16,6 +16,13 @@ It combines several feature extraction techniques, multiple machine learning cla
 
 ---
 
+## 📄 Report
+
+A detailed PDF report presenting the methodology, descriptive analysis, experiments, and results is available directly in this repository:
+👉 **[📘 View the Report (LLM_Text_Detection_Report.pdf)](./LLM_Text_Detection_Report.pdf)**
+
+---
+
 ## 📚 Data and references
 ### 📖 Survey for methodological overview:
 *"A Survey on LLM-Generated Text Detection: Necessity, Methods, and Future Directions"* [https://arxiv.org/pdf/2310.14724](https://arxiv.org/pdf/2310.14724)
@@ -190,6 +197,7 @@ ENSAE_NLP_project/
 │       └── features_definition.py               # Batch extraction of handcrafted features
 │
 ├── app.py                       # Main Streamlit app for user interaction
+├── LLM_Text_Detection_Report.pdf
 ├── notebook.ipynb               # Exploratory notebook for initial experiments
 ├── pyproject.toml               # Project configuration file
 ├── README.md                    # Project description and instructions
